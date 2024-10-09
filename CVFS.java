@@ -34,9 +34,14 @@ public class CVFS {
     }
 
     public static void dirMove(String name) {
-        List<VirtualFile> templist = _directory.list(false);
-        //todo find matching name file of type dir in list, and set as _directory
-        _directory = templist.get(0);
+        if (name == null) {
+            _directory = _directory.getParent();
+        }
+        else {
+            List<VirtualFile> templist = _directory.listDir();
+            //todo find matching name file of type dir in list, and set as _directory
+            _directory = templist.get(0);
+        }
     }
 
     // ======= File Methods =======
@@ -50,7 +55,7 @@ public class CVFS {
     //for file
     public static void fileNew(String name, String type, String content) {
         //todo fail to add if already have same name file or directory
-        int tempSize = VirtualFile.getSize(content) + _diskSize;
+        int tempSize = VirtualFile.calculateSize(content) + _diskSize;
         //todo get rid of output below when hand in
         CLI.output("file size: " + tempSize + " | disk size: " +  _disk.getMaxSize());
         if (_disk.getMaxSize() > tempSize) {
@@ -71,11 +76,9 @@ public class CVFS {
 
     // ======= view methods =======
     public static void list(boolean recursive, Criterion criterion) {
-        List<VirtualFile> templist = (criterion == null) ? _directory.list(recursive) : _directory.list(recursive, criterion);
-
-        for (VirtualFile file : templist) {
+        for (VirtualFile file : _directory.listFile(recursive, criterion)) {
             if (!Objects.equals(file.getType(), "dir")){
-                CLI.output("Name: " + file.getName() + " | Size: " + VirtualFile.getSize(file)+ " | Type: " + file.getType());
+                CLI.output("Name: " + file.getName() + " | Size: " + VirtualFile.calculateSize(file)+ " | Type: " + file.getType());
             }
         }
     }

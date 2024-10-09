@@ -9,11 +9,13 @@ public class VirtualFile {
     // =========================== object specific variables
     private String _name;
     private String _type; // "dir", "txt", "java", "html", "css"
-    private String _content;
-    private List<VirtualFile> _children;
     private VirtualFile _parent;
 
-    // for disk only
+    // file only
+    private String _content;
+    // directory and disk only
+    private List<VirtualFile> _children;
+    // disk only
     private int _maxSize;
     private int _size;
 
@@ -43,13 +45,13 @@ public class VirtualFile {
 
 
 
-    //----------- helper methods
+    //----------- size methods
 
-    public static int getSize(VirtualFile file) {
+    public static int calculateSize(VirtualFile file) {
         return 40 + (file.getContent().length() * 2);
     }
 
-    public static int getSize(String content) {
+    public static int calculateSize(String content) {
         return 40 + (content.length() * 2);
     }
 
@@ -69,13 +71,10 @@ public class VirtualFile {
         _maxSize = maxSize;
     }
 
+    //----------- var methods
+
     public String getName() {
         return _name;
-    }
-
-    public String getContent() {
-        if (_content == null) return "";
-        return _content;
     }
 
     public void setName(String name) {
@@ -86,12 +85,18 @@ public class VirtualFile {
         return _type;
     }
 
+    //don't know what may use it for
     public VirtualFile getParent() {
         return _parent;
     }
 
     public void setParent(VirtualFile parent) {
         _parent = parent;
+    }
+
+    public String getContent() {
+        if (_content == null) return "";
+        return _content;
     }
 
 
@@ -117,7 +122,7 @@ public class VirtualFile {
             if (file.getName().equals(name)) {
                 _children.remove(file);
                 CLI.output("Removed file: " + name + " from directory: " + _name);
-                return VirtualFile.getSize(file);
+                return VirtualFile.calculateSize(file);
             }
         }
         CLI.output("File not found: " + name + " in directory: " + _name);
@@ -148,29 +153,36 @@ public class VirtualFile {
 
 
 
-
-    public List<VirtualFile> list(boolean recursive) {
-        if (!recursive) {
-            return new ArrayList<>(_children);
-        }
-        else {
-            //todo add recursion
-            return null;
-        }
-    }
-
-    public List<VirtualFile> list(boolean recursive, Criterion criterion) {
+    public List<VirtualFile> listDir() {
         List<VirtualFile> tempList = new ArrayList<>();
-        if (!recursive) {
-            for (VirtualFile file : _children) {
-                if (criterion.checkFile(file)) {
-                    tempList.add(file);
-                }
+        for (VirtualFile file : _children) {
+            if (!Criterion._isDocument.checkFile(file))
+            {
+                tempList.add(file);
             }
         }
-        else {
-            //todo add recursion
+        return tempList;
+    }
+
+    public List<VirtualFile> listFile(boolean recursive, Criterion criterion) {
+        List<VirtualFile> tempList = new ArrayList<>();
+
+        for (VirtualFile file : _children) {
+            if (Criterion._isDocument.checkFile(file))
+            {
+                if (criterion == null) {
+                    tempList.add(file);
+                }
+                else {
+                    if (criterion.checkFile(file)) tempList.add(file);
+                }
+            }
+            else if (recursive)
+            {
+                tempList.addAll(file.listFile(true, criterion));
+            }
         }
+
         return tempList;
     }
 }

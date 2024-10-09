@@ -14,25 +14,38 @@ public class CLI {
     static {
         defaultInputs.add("help");
         defaultInputs.add("newDisk disk 110101010");
-        defaultInputs.add("newDoc wow txt xerctvybunimxrctvybun");
-        defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc aaaa java xerctvybunimaaaaaxrctvybun");
+        defaultInputs.add("newDoc a txt xerctvybunimxrctvybun");
+        defaultInputs.add("newDoc b txt xerctvybunimawdawdxrctvybun");
+        defaultInputs.add("newDoc c java xerctvybunimaaaaaxrctvybun");
         defaultInputs.add("newDir folder");
-        defaultInputs.add("newSimpleCri aa bb cc dd");
-        defaultInputs.add("newNegation bb aa");
-        defaultInputs.add("newNegation aa aa");
-        defaultInputs.add("newBinaryCri cc bb && aa");
-        defaultInputs.add("printAllCriteria");
-        defaultInputs.add("list");
-        defaultInputs.add("newDisk disk 110101010");
+        defaultInputs.add("changeDir folder");
         defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
         defaultInputs.add("newDoc bb css xerctvybunimawdawdxrctvybun");
         defaultInputs.add("newDoc cc java xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("delete bb");
-        defaultInputs.add("rename cc dd");
+        defaultInputs.add("return");
+        defaultInputs.add("rList");
         defaultInputs.add("list");
-        defaultInputs.add("newDoc ee html xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("list");
+        defaultInputs.add("newNegation bb IsDocument");
+        defaultInputs.add("search bb");
+
+
+
+
+//        defaultInputs.add("newSimpleCri aa bb cc dd");
+//        defaultInputs.add("newNegation bb aa");
+//        defaultInputs.add("newNegation aa aa");
+//        defaultInputs.add("newBinaryCri cc bb && aa");
+//        defaultInputs.add("printAllCriteria");
+//        defaultInputs.add("list");
+//        defaultInputs.add("newDisk disk 110101010");
+//        defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
+//        defaultInputs.add("newDoc bb css xerctvybunimawdawdxrctvybun");
+//        defaultInputs.add("newDoc cc java xerctvybunimawdawdxrctvybun");
+//        defaultInputs.add("delete bb");
+//        defaultInputs.add("rename cc dd");
+//        defaultInputs.add("list");
+//        defaultInputs.add("newDoc ee html xerctvybunimawdawdxrctvybun");
+//        defaultInputs.add("list");
     }
 
     private static void input() {
@@ -67,6 +80,9 @@ public class CLI {
             switch (_command[0]) {
                 case "help":
                     printCommands();
+                    break;
+                case "return":
+                    CVFS.dirMove(null);
                     break;
 
                 case "changeDir":

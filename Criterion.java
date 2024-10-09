@@ -9,6 +9,7 @@ public class Criterion {
     //     ============== static methods
 
     private static Map<String, Criterion> _map = new HashMap<>(); // To store all criteria
+    public static Criterion _isDocument;
 
     public static Criterion getCriterion(String name) {
         return _map.get(name);
@@ -18,26 +19,37 @@ public class Criterion {
         CLI.output("All defined criteria:");
         for (Criterion criterion : _map.values()) {
             CLI.output("-----------------------------");
-            if (Objects.equals(criterion._name, "isDocument")) {
-                CLI.output("Criterion Name: IsDocument \n Checks if file is a document");
+
+            if (Objects.equals(criterion._name, "isDocument"))
+            {
+                CLI.output("Criterion Name: IsDocument " +
+                        "\n Checks if file is a document");
             }
-            else {
-                String output = "Criterion Name: " + criterion._name + "\n" +
+            else
+            {
+                String output =
+                        "Criterion Name: " + criterion._name + "\n" +
                         "Type: " + criterion._type;
 
                 switch (criterion._type) {
                     case "simple": // Simple criterion
-                        output += "Attribute: " + criterion._attribute + "\n" +
+                        output +=
+                                "Attribute: " + criterion._attribute + "\n" +
                                 "Operator: " + criterion._operator + "\n" +
                                 "Value: " + criterion._value;
+
                         break;
                     case "negation": // Negation
-                        output += "Negation of: " + criterion._criterionA._name;
+                        output +=
+                                "Negation of: " + criterion._criterionA._name;
+
                         break;
                     case "binary": // Binary
                         output += "Combination of: " +
-                                criterion._criterionA._name + " and " +
-                                criterion._criterionB._name;
+                                criterion._criterionA._name +
+                                " " + criterion._operator + " "
+                                + criterion._criterionB._name;
+
                         break;
                     default:
                         output += "Unknown criterion type.";
@@ -135,6 +147,7 @@ public class Criterion {
     public Criterion() {
         _name = "IsDocument";
         _type = "document";
+        _isDocument = this;
         _map.put(_name, this);
     }
 
