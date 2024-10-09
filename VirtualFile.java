@@ -152,16 +152,19 @@ public class VirtualFile {
 
 
 
-
-    public List<VirtualFile> listDir() {
+    public VirtualFile getChild(String name, boolean isFile) {
         List<VirtualFile> tempList = new ArrayList<>();
-        for (VirtualFile file : _children) {
-            if (!Criterion._isDocument.checkFile(file))
-            {
-                tempList.add(file);
+        if (isFile) {
+            for (VirtualFile file : _children) {
+                if (Criterion._isDocument.checkFile(file) && Objects.equals(file.getName(), name)) return file;
             }
         }
-        return tempList;
+        else {
+            for (VirtualFile file : _children) {
+                if (!Criterion._isDocument.checkFile(file) && Objects.equals(file.getName(), name)) return file;
+            }
+        }
+        return null;
     }
 
     public List<VirtualFile> listFile(boolean recursive, Criterion criterion) {

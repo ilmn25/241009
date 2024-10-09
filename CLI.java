@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CLI {
-    private static Scanner _scanner = new Scanner(System.in);
+    private static final Scanner _scanner = new Scanner(System.in);
     private static String[] _command;
 
 
@@ -15,37 +15,21 @@ public class CLI {
         defaultInputs.add("help");
         defaultInputs.add("newDisk disk 110101010");
         defaultInputs.add("newDoc a txt xerctvybunimxrctvybun");
+        defaultInputs.add("newDoc a txt xerctvybunimxrctvybun");
         defaultInputs.add("newDoc b txt xerctvybunimawdawdxrctvybun");
         defaultInputs.add("newDoc c java xerctvybunimaaaaaxrctvybun");
         defaultInputs.add("newDir folder");
         defaultInputs.add("changeDir folder");
+        defaultInputs.add("newDir aaaad");
+        defaultInputs.add("changeDir aaaad");
         defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc bb css xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc cc java xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("return");
+        defaultInputs.add("newDoc aa css xerctvybunimawdawdxrctvybun");
+        defaultInputs.add("newDoc a java xerctvybunimawdawdxrctvybun");
+        defaultInputs.add("back");
         defaultInputs.add("rList");
         defaultInputs.add("list");
         defaultInputs.add("newNegation bb IsDocument");
         defaultInputs.add("search bb");
-
-
-
-
-//        defaultInputs.add("newSimpleCri aa bb cc dd");
-//        defaultInputs.add("newNegation bb aa");
-//        defaultInputs.add("newNegation aa aa");
-//        defaultInputs.add("newBinaryCri cc bb && aa");
-//        defaultInputs.add("printAllCriteria");
-//        defaultInputs.add("list");
-//        defaultInputs.add("newDisk disk 110101010");
-//        defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
-//        defaultInputs.add("newDoc bb css xerctvybunimawdawdxrctvybun");
-//        defaultInputs.add("newDoc cc java xerctvybunimawdawdxrctvybun");
-//        defaultInputs.add("delete bb");
-//        defaultInputs.add("rename cc dd");
-//        defaultInputs.add("list");
-//        defaultInputs.add("newDoc ee html xerctvybunimawdawdxrctvybun");
-//        defaultInputs.add("list");
     }
 
     private static void input() {
@@ -59,29 +43,23 @@ public class CLI {
         output("--------------");
     }
 
-
-
     public static void output(String message) {
         System.out.println(message);
     }
 
     // ====== main loop ======
-
     public static void Run() {
         output("======================\n= Welcome to the Comp Virtual File System (CVFS) =");
         while (true) {
             output("===================================================================");
-            //todo show working directory
-            //todo symbol ‘$’ to denote the working directory and the symbol ‘:’ to separate the file names in a path.
-            //todo For example, path “$:xyz” refers to a file named “xyz” inside the working directory. Depending
-            //todo on whether the file actually exists in the working directory or not, the path may be valid or invalid.
+            output(CVFS.getPath() + ">");
             input();
 
             switch (_command[0]) {
                 case "help":
                     printCommands();
                     break;
-                case "return":
+                case "back":
                     CVFS.dirMove(null);
                     break;
 
