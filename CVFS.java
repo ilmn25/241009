@@ -7,11 +7,11 @@ import java.util.Objects;
 public class CVFS {
     private static VirtualFile _disk;
     private static VirtualFile _directory;
-    private static long _diskSize;
+    private static int _diskSize;
     
     // ======= disk and navigation =======
 
-    public static void diskNew(String diskName, long size) {
+    public static void diskNew(String diskName, int size) {
         _disk = new VirtualFile(diskName);
         _directory = _disk;
         _diskSize = 0;
@@ -50,7 +50,7 @@ public class CVFS {
     //for file
     public static void fileNew(String name, String type, String content) {
         //todo fail to add if already have same name file or directory
-        long tempSize = VirtualFile.getSize(content) + _diskSize;
+        int tempSize = VirtualFile.getSize(content) + _diskSize;
         //todo get rid of output below when hand in
         CLI.output("file size: " + tempSize + " | disk size: " +  _disk.getMaxSize());
         if (_disk.getMaxSize() > tempSize) {
@@ -66,7 +66,7 @@ public class CVFS {
     }
 
     public static void fileDelete(String name) {
-        _directory.fileRemove(name);
+        _diskSize -= _directory.fileRemove(name);
     }
 
     // ======= view methods =======
@@ -75,7 +75,7 @@ public class CVFS {
 
         for (VirtualFile file : templist) {
             if (!Objects.equals(file.getType(), "dir")){
-                System.out.println("Name: " + file.getName() + " | Size: " + VirtualFile.getSize(file)+ " | Type: " + file.getType());
+                CLI.output("Name: " + file.getName() + " | Size: " + VirtualFile.getSize(file)+ " | Type: " + file.getType());
             }
         }
     }

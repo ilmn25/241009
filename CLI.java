@@ -26,10 +26,12 @@ public class CLI {
         defaultInputs.add("list");
         defaultInputs.add("newDisk disk 110101010");
         defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc bb txt xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc cc txt xerctvybunimawdawdxrctvybun");
+        defaultInputs.add("newDoc bb css xerctvybunimawdawdxrctvybun");
+        defaultInputs.add("newDoc cc java xerctvybunimawdawdxrctvybun");
         defaultInputs.add("delete bb");
         defaultInputs.add("rename cc dd");
+        defaultInputs.add("list");
+        defaultInputs.add("newDoc ee html xerctvybunimawdawdxrctvybun");
         defaultInputs.add("list");
     }
 

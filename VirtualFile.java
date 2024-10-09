@@ -14,8 +14,8 @@ public class VirtualFile {
     private VirtualFile _parent;
 
     // for disk only
-    private long _maxSize;
-    private long _size;
+    private int _maxSize;
+    private int _size;
 
     // ========================== create file object
 
@@ -45,27 +45,27 @@ public class VirtualFile {
 
     //----------- helper methods
 
-    public static long getSize(VirtualFile file) {
-        return 40 + (file.getContent().length() * 2L);
+    public static int getSize(VirtualFile file) {
+        return 40 + (file.getContent().length() * 2);
     }
 
-    public static long getSize(String content) {
-        return 40 + (content.length() * 2L);
+    public static int getSize(String content) {
+        return 40 + (content.length() * 2);
     }
 
-    public long getSize() {
+    public int getSize() {
         return _size;
     }
 
-    public void setSize(long size) {
+    public void setSize(int size) {
         _size = size;
     }
 
-    public Long getMaxSize() {
+    public int getMaxSize() {
         return _maxSize;
     }
 
-    public void setMaxSize(long maxSize) {
+    public void setMaxSize(int maxSize) {
         _maxSize = maxSize;
     }
 
@@ -107,43 +107,32 @@ public class VirtualFile {
 
     // ----------- dir methods
     public void fileAdd(VirtualFile file) {
-        if (Objects.equals(_type, "dir")) {
-            file.setParent(this);
-            _children.add(file);
-            CLI.output("Added file: " + file.getName() + " to directory: " + _name);
-        } else {
-            CLI.output("Cannot add file to a non-directory type: " + _name);
-        }
+        file.setParent(this);
+        _children.add(file);
+        CLI.output("Added file: " + file.getName() + " to directory: " + _name);
     }
 
-    public void fileRemove(String name) {
-        if (Objects.equals(_type, "dir")) {
-            for (VirtualFile child : _children) {
-                if (child.getName().equals(name)) {
-                    _children.remove(child);
-                    CLI.output("Removed file: " + name + " from directory: " + _name);
-                    return;
-                }
+    public int fileRemove(String name) {
+        for (VirtualFile file : _children) {
+            if (file.getName().equals(name)) {
+                _children.remove(file);
+                CLI.output("Removed file: " + name + " from directory: " + _name);
+                return VirtualFile.getSize(file);
             }
-            CLI.output("File not found: " + name + " in directory: " + _name);
-        } else {
-            CLI.output("Cannot remove file from a non-directory type: " + _name);
         }
+        CLI.output("File not found: " + name + " in directory: " + _name);
+        return 0;
     }
 
     public void fileRename(String nameOld, String nameNew) {
-        if (Objects.equals(_type, "dir")) {
-            for (VirtualFile child : _children) {
-                if (child.getName().equals(nameOld)) {
-                    child.setName(nameNew);
-                    CLI.output("Renamed file: " + nameOld + " from directory: " + _name);
-                    return;
-                }
+        for (VirtualFile child : _children) {
+            if (child.getName().equals(nameOld)) {
+                child.setName(nameNew);
+                CLI.output("Renamed file: " + nameOld + " from directory: " + _name);
+                return;
             }
-            CLI.output("File not found: " + nameOld + " in directory: " + _name);
-        } else {
-            CLI.output("Cannot remove file from a non-directory type: " + _name);
         }
+        CLI.output("File not found: " + nameOld + " in directory: " + _name);
     }
 
 
