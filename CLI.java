@@ -1,9 +1,19 @@
 package hk.edu.polyu.comp.comp2021.cvfs.model;
 
+import hk.edu.polyu.comp.comp2021.cvfs.model.crit.Crit;
+import hk.edu.polyu.comp.comp2021.cvfs.model.crit.CritB;
+import hk.edu.polyu.comp.comp2021.cvfs.model.crit.CritN;
+import hk.edu.polyu.comp.comp2021.cvfs.model.crit.CritS;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * command line interface class, handles input output and input syntax check etc
+ */
 public class CLI {
     private static final Scanner _scanner = new Scanner(System.in);
     private static String[] _command;
@@ -12,127 +22,204 @@ public class CLI {
     //TODO THIS IS FOR DEBUGGING, DELETE FROM BUILD
     private static List<String> defaultInputs = new ArrayList<>();
     static {
-        defaultInputs.add("help");
-        defaultInputs.add("newDisk disk 110101010");
-        defaultInputs.add("newDoc a txt xerctvybunimxrctvybun");
-        defaultInputs.add("newDoc a txt xerctvybunimxrctvybun");
-        defaultInputs.add("newDoc b txt xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc c java xerctvybunimaaaaaxrctvybun");
-        defaultInputs.add("newDir folder");
-        defaultInputs.add("changeDir folder");
-        defaultInputs.add("newDir aaaad");
-        defaultInputs.add("changeDir aaaad");
-        defaultInputs.add("newDoc aa txt xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc aa css xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("newDoc a java xerctvybunimawdawdxrctvybun");
-        defaultInputs.add("back");
+        defaultInputs.add("newDisk 13131");
+        defaultInputs.add("newDoc a txt exampleContent");
+        defaultInputs.add("newDoc b txt anotherExampleContent");
+        defaultInputs.add("newDoc c java javaExampleContent");
+        defaultInputs.add("newDir exampleFolder");
+        defaultInputs.add("changeDir exampleFolder");
+        defaultInputs.add("newDir subFolder");
+        defaultInputs.add("changeDir exampleFolder");
+        defaultInputs.add("changeDir subFolder");
+        defaultInputs.add("newDoc ddd txt subFolderContent");
+        defaultInputs.add("newDoc ed css subFolderCSSContent");
+        defaultInputs.add("newDoc f java subFolderJavaContent");
         defaultInputs.add("rList");
         defaultInputs.add("list");
-        defaultInputs.add("newNegation bb IsDocument");
-        defaultInputs.add("search bb");
+        defaultInputs.add("newSimpleCri aaa name contains \"d\"");
+        defaultInputs.add("newSimpleCri aa name contains \"d\"");
+        defaultInputs.add("newSimpleCri bb type equals \"txt\"");
+        defaultInputs.add("newSimpleCri cc size > 100");
+        defaultInputs.add("newNegation dd IsDocument");
+        defaultInputs.add("newBinaryCri ee aa && bb");
+        defaultInputs.add("newBinaryCri ff cc || dd");
+        defaultInputs.add("printAllCriteria");
+        defaultInputs.add("search aa");
+        defaultInputs.add("rSearch bb");
+        defaultInputs.add("save C:/Users/illuminae/Downloads/");
+        defaultInputs.add("newDisk 13131");
+        defaultInputs.add("load C:/Users/illuminae/Downloads/");
+        defaultInputs.add("rList");
+        defaultInputs.add("changeDir exampleFolder");
+        defaultInputs.add("changeDir subFolder");
+        defaultInputs.add("rList");
+        defaultInputs.add("list");
+        defaultInputs.add("printAllCriteria");
+        defaultInputs.add("search aa");
+        defaultInputs.add("rSearch bb");
+        defaultInputs.add("newDoc ddd txt subFolderContent");
+        defaultInputs.add("newDoc ddd css subFolderCSSContent");
+        defaultInputs.add("newDoc ddd java subFolderJavaContent");
+        defaultInputs.add("newDir ddd");
+        defaultInputs.add("newDoc ddd txt subFolderContent");
+        defaultInputs.add("newDoc ddd css subFolderCSSContent");
+        defaultInputs.add("newDoc ddd java subFolderJavaContent");
+        defaultInputs.add("newDir ddd");
+        defaultInputs.add("list");
+        defaultInputs.add("rList");
+
+
     }
 
     private static void input() {
         if (!defaultInputs.isEmpty()) {
             String inputCommand = defaultInputs.remove(0);
-            output("♿ Autosend > " + inputCommand);
+            System.out.print("> ♿ " + inputCommand + "\n");
             _command = inputCommand.split(" ");
         } else {
+            System.out.print("> ");
             _command = _scanner.nextLine().split(" ");
         }
-        output("--------------");
     }
 
+    /**
+     * @param message string to print in interface console
+     */
     public static void output(String message) {
         System.out.println(message);
     }
 
-    // ====== main loop ======
+    /**
+     * main loop of input and output
+     */
     public static void Run() {
         output("======================\n= Welcome to the Comp Virtual File System (CVFS) =");
         while (true) {
             output("===================================================================");
-            output(CVFS.getPath() + ">");
             input();
 
             switch (_command[0]) {
-                case "help":
-                    printCommands();
-                    break;
-                case "back":
-                    CVFS.dirMove(null);
-                    break;
-
                 case "changeDir":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(2)) continue;
                     changeDir();
                     break;
                 case "save":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(2)) continue;
                     save();
                     break;
                 case "load":
+                    if (!checkArgCount(2)) continue;
                     load();
                     break;
                 case "quit":
+                    if (!checkArgCount(1)) continue;
                     _scanner.close();
                     return;
-
                 case "newDisk":
+                    if (!checkArgCount(2)) continue;
                     newDisk();
                     break;
                 case "newDoc":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(4)) continue;
                     newDoc();
                     break;
                 case "newDir":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(2)) continue;
                     newDir();
                     break;
                 case "delete":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(2)) continue;
                     delete();
                     break;
                 case "rename":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(3)) continue;
                     rename();
                     break;
-
                 case "list":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(1)) continue;
                     list();
                     break;
                 case "rList":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(1)) continue;
                     rList();
                     break;
                 case "search":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(2)) continue;
                     search();
                     break;
                 case "rSearch":
+                    if (!CVFS.hasDisk()) continue;
+                    if (!checkArgCount(2)) continue;
                     rSearch();
                     break;
-
                 case "newSimpleCri":
+                    if (!checkArgCount(5)) continue;
                     newSimpleCri();
                     break;
                 case "newNegation":
+                    if (!checkArgCount(3)) continue;
                     newNegation();
                     break;
                 case "newBinaryCri":
+                    if (!checkArgCount(5)) continue;
                     newBinaryCri();
                     break;
                 case "printAllCriteria":
+                    if (!checkArgCount(1)) continue;
                     printAllCriteria();
                     break;
-
                 default:
-                    output("Unknown _command.");
+                    output("input error: command not found, please check capitalization and spelling");
+                    break;
             }
         }
     }
 
+    /**
+     * @param value string that needs branket removed, like value parameter of criterion
+     * @return value with branket removed
+     */
+    public static String removeQuotes(String value) {
+        if (value != null && value.length() > 1 && value.startsWith("\"") && value.endsWith("\"")) {
+            return value.substring(1, value.length() - 1);
+        }
+        return value;
+    }
+
+    private static boolean checkArgCount(int count) {
+        if (_command.length == count) {
+            return true;
+        }
+        output("input error: wrong argument count for " + _command[0] +
+                ", expected " + (count-1) + ", received " + (_command.length-1));
+        return false;
+    }
 
     private static void save() {
-        //todo check if command strings are correct
-        CVFS.diskSave(_command[1]);
+        String path = _command[1];
+        if (Files.exists(Paths.get(path))) {
+            Save.diskSave(path + "disk.dat");
+        } else {
+            CLI.output("path error: the specified path does not exist");
+        }
     }
 
     private static void load() {
-        //todo check if command strings are correct
-        CVFS.diskLoad(_command[1]);
+        String path = _command[1];
+        if (Files.exists(Paths.get(path + "disk.dat"))) {
+            Save.diskLoad(path + "disk.dat");
+        } else {
+            CLI.output("path error: the specified path does not exist, or disk.dat is not present at the path");
+        }
     }
 
     private static void changeDir() {
@@ -141,93 +228,150 @@ public class CLI {
     }
 
     private static void newDisk() {
-        //todo check if command strings are correct
         try {
-            CVFS.diskNew(_command[1], Integer.parseInt(_command[2]));
+            int size = Integer.parseInt(_command[1]);
+            if (size > 0) {
+                CVFS.diskNew(size);
+            } else output("input error: size cannot be 0 or under");
         } catch (NumberFormatException e) {
-            output("Error: Size must be an integer.");
+            output("input error: size must be an integer and has a positive value under " + Integer.MAX_VALUE);
         }
     }
 
     private static void newDoc() {
-        //todo check if command strings are correct
-        CVFS.fileNew(_command[1], _command[2], _command[3]);
+        if (!_command[2].equals("txt")
+                && !_command[2].equals("java")
+                && !_command[2].equals("css")
+                && !_command[2].equals("html")) {
+
+            CLI.output("Invalid file type " + _command[2]
+                    + "must be \"txt\", \"java\", \"css\", or \"html");
+            return;
+        }
+        CVFS.docNew(_command[1], _command[2], _command[3]);
     }
 
+
     private static void newDir() {
-        //todo check if command strings are correct
-        CVFS.fileNew(_command[1]);
+        CVFS.dirNew(_command[1]);
     }
 
     private static void delete() {
-        //todo check if command strings are correct
         CVFS.fileDelete(_command[1]);
     }
 
     private static void rename() {
-        //todo check if command strings are correct
         CVFS.fileRename(_command[1], _command[2]);
     }
 
     private static void list() {
-        CVFS.list(false, null);
+        CVFS.getDir().list(false, null);
     }
 
     private static void rList() {
-        CVFS.list(true, null);
+        CVFS.getDir().list(true, null);
     }
 
     private static void search() {
-        //todo check if command strings are correct
-        CVFS.list(false, Criterion.getCriterion(_command[1]));
+        Crit tempCriterion = Crit.getCriterion(_command[1]);
+        if (tempCriterion == null) {
+            CLI.output("input error: no criterion found with the name " + _command[1]);
+            return;
+        }
+        CVFS.getDir().list(false, tempCriterion);
     }
 
     private static void rSearch() {
-        //todo check if command strings are correct
-        CVFS.list(true, Criterion.getCriterion(_command[1]));
+        Crit tempCriterion = Crit.getCriterion(_command[1]);
+        if (tempCriterion == null) {
+            CLI.output("input error: no criterion found with the name " + _command[1]);
+            return;
+        }
+        CVFS.getDir().list(true, tempCriterion);
     }
 
     private static void newSimpleCri() {
-        //todo check if command strings are correct
-        new Criterion(_command[1], _command[2], _command[3], _command[4]);
-    }
-
-    private static void newNegation() {
-        //todo check if command strings are correct
-        Criterion tempA = Criterion.getCriterion(_command[1]);
-        if (tempA != null) {
-            output(_command[1] + " already exists");
+        if (Crit.getCriterion(_command[1]) != null) {
+            output("command error: " + _command[1] + " already exists");
             return;
         }
 
-        tempA = Criterion.getCriterion(_command[2]);
+        if (!_command[1].matches("^[a-zA-Z]{2}$")) {
+            CLI.output("input error: new criterion name must contain exactly two English letters.");
+            return;
+        }
+
+        switch (_command[2]) {
+            case "name":
+                if (!_command[3].equals("contains") || !_command[4].matches("^\".*\"$")) {
+                    CLI.output("input error: for 'name', operator must be 'contains' and value must be surrounded by double quotes (\")");
+                    return;
+                }
+                _command[4] = removeQuotes(_command[4]);
+                break;
+            case "type":
+                if (!_command[3].equals("equals") || !_command[4].matches("^\".*\"$")) {
+                    CLI.output("input error: for 'type', operator must be 'equals' and value must be \"txt\", \"java\", \"css\",or \"html\" with double quotes included (\")");
+                    return;
+                }
+                _command[4] = removeQuotes(_command[4]);
+                break;
+            case "size":
+                if (!_command[3].matches(">|<|>=|<=|==|!=") || !_command[4].matches("^\\d+$")) {
+                    CLI.output("input error: for 'size', operator must be one of '>', '<', '>=', '<=', '==', '!=' and value must be an integer.");
+                    return;
+                }
+                break;
+            default:
+                CLI.output("input error: attribute must be 'name', 'type', or 'size'");
+                return;
+        }
+
+        new CritS(_command[1], _command[2], _command[3], _command[4]);
+    }
+
+
+    private static void newNegation() {
+        if (Crit.getCriterion(_command[1]) != null) {
+            output("command error: " + _command[1] + " already exists");
+            return;
+        }
+
+        if (!_command[1].matches("^[a-zA-Z]{2}$")) {
+            CLI.output("input error: new criterion name must contain exactly two English letters.");
+            return;
+        }
+
+        Crit tempA = Crit.getCriterion(_command[2]);
         if (tempA != null) {
-            new Criterion(_command[1], tempA);
+            new CritN(_command[1], tempA);
         } else {
-            CLI.output("criteria do not exist");
+            CLI.output("command error: " + _command[2] + " do not exist");
         }
     }
 
     private static void newBinaryCri() {
-        //todo check if command strings are correct
-        Criterion tempA = Criterion.getCriterion(_command[1]);
-        if (tempA != null) {
-            output(_command[1] + " already exists");
+        if (Crit.getCriterion(_command[1]) != null) {
+            output("command error: " + _command[1] + " already exists");
             return;
         }
 
-        tempA = Criterion.getCriterion(_command[2]);
-        Criterion tempB = Criterion.getCriterion(_command[4]);
+        if (!_command[3].equals("&&") && !_command[3].equals("||")) {
+            CLI.output("input error: operator should be '&&' or '||'");
+            return;
+        }
 
+        Crit tempA = Crit.getCriterion(_command[2]);
+        Crit tempB = Crit.getCriterion(_command[4]);
         if (tempA != null && tempB != null) {
-            new Criterion(_command[1], tempA, tempB, _command[3]);
+            new CritB(_command[1], tempA, tempB, _command[3]);
         } else {
-            CLI.output("One or both criteria do not exist");
+            CLI.output("command error: one or both criteria do not exist");
         }
     }
 
     private static void printAllCriteria() {
-        Criterion.list();
+        Crit.list();
     }
 
 
